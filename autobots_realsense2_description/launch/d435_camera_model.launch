@@ -1,0 +1,58 @@
+<launch>
+  <!-- https://github.com/rickstaa/realsense-ros/blob/da38e309c2fbe88e45e6148bf5d944486b3e8e98/realsense2_description/launch/view_d435_model_rviz_gazebo.launch -->
+
+  <!-- arguments for the urdf xacro file, rviz visualization and namespace -->
+  <arg name="name" default="camera" />
+  <arg name="topics_ns" default="camera" />
+  <arg name="add_plug" default="false" />
+  <arg name="publish_pointcloud" default="true" />
+  <arg name="model_description" default="d435_camera" />
+  <arg
+    name="model"
+    default="$(find autobots_realsense2_description)/urdf/d435_camera.urdf.xacro"
+  />
+
+  <!-- Load the sdf model only the parameter server -->
+  <param
+    name="$(arg model_description)"
+    command="$(find xacro)/xacro $(arg model)
+      use_nominal_extrinsics:=true
+      publish_pointcloud:=$(arg publish_pointcloud)
+      add_plug:=$(arg add_plug)
+      name:=$(arg name)
+      topics_ns:=$(arg topics_ns)
+      gravity:=0"
+  />
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+  >
+    <param name="publish_frequency" type="double" value="5.0" />
+  </node>
+
+  <!-- https://github.com/pal-robotics/realsense_gazebo_plugin/issues/31#issuecomment-1098682872 -->
+  <group ns="camera">
+    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
+
+    <node
+      pkg="nodelet"
+      type="nodelet"
+      name="nodelet1"
+      args="load depth_image_proc/register nodelet_manager"
+    >
+      <remap from="rgb/camera_info" to="color/camera_info" />
+      <remap from="depth/camera_info" to="depth/camera_info" />
+      <remap from="depth/image_rect" to="depth/image_raw" />
+      <remap
+        from="depth_registered/camera_info"
+        to="aligned_depth_to_color/camera_info"
+      />
+      <remap
+        from="depth_registered/image_rect"
+        to="aligned_depth_to_color/image_raw"
+      />
+    </node>
+  </group>
+</launch>
