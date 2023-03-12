@@ -15,7 +15,7 @@
   <group ns="camera">
     <!-- Load the sdf model only the parameter server -->
     <param
-      name="robot_description"
+      name="$(arg name)_description"
       command="$(find xacro)/xacro $(arg model)
         use_nominal_extrinsics:=true
         publish_pointcloud:=$(arg publish_pointcloud)
@@ -32,26 +32,33 @@
       respawn="false"
       output="screen"
       args="-urdf
-        -param robot_description
+        -param $(arg name)_description
         -model $(arg name)
         -unpause $(arg spawn_args)"
     />
 
     <node
-      name="robot_state_publisher"
+      name="$(arg name)_state_publisher"
       pkg="robot_state_publisher"
       type="robot_state_publisher"
     >
+      <!-- http://wiki.ros.org/robot_state_publisher/Tutorials/Using%20the%20robot%20state%20publisher%20on%20your%20own%20robot -->
+      <remap from="robot_description" to="$(arg name)_description" />
       <param name="publish_frequency" type="double" value="5.0" />
     </node>
 
     <!-- https://github.com/pal-robotics/realsense_gazebo_plugin/issues/31#issuecomment-1098682872 -->
-    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
     <node
       pkg="nodelet"
       type="nodelet"
-      name="nodelet1"
-      args="load depth_image_proc/register nodelet_manager"
+      name="$(arg name)_nodelet_manager"
+      args="manager"
+    />
+    <node
+      pkg="nodelet"
+      type="nodelet"
+      name="$(arg name)_nodelet"
+      args="load depth_image_proc/register $(arg name)_nodelet_manager"
     >
       <remap from="rgb/camera_info" to="color/camera_info" />
       <remap from="depth/camera_info" to="depth/camera_info" />

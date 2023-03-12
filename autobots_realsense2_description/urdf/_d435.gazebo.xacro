@@ -34,8 +34,8 @@ https://github.com/rickstaa/realsense-ros/blob/da38e309c2fbe88e45e6148bf5d944486
       <fdir1>0 0 0</fdir1>
       <!--<slip1>0</slip1>
       <slip2>0</slip2>-->
-      <kp>1e+13</kp>
-      <kd>1</kd>
+      <kp>0</kp>
+      <kd>0</kd>
       <!--<max_vel>0.01</max_vel>
       <min_depth>0</min_depth>-->
       <sensor name="${camera_name}color" type="camera">

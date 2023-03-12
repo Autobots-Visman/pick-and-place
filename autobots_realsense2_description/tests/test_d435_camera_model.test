@@ -22,6 +22,6 @@
     pkg="ros_pytest"
     type="ros_pytest_runner"
     args="-k test_d435_camera_model -vvv -s"
-    time-limit="60.0"
+    time-limit="15.0"
   />
 </launch>
