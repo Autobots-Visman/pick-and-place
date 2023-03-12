@@ -1,0 +1,64 @@
+<launch>
+    <arg name="use_gui" default="true" />
+    <arg name="debug" default="false" />
+    <arg name="spawn_args" default="-x 0 -y 0 -z 0.0" />
+    <param
+    name="robot_description"
+    textfile="$(find finalarm_description)/urdf/finalarm_description_position_control.urdf"
+  />
+    <node
+    name="urdf_spawner"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    respawn="false"
+    output="screen"
+    args="-urdf -model finalarm -param robot_description $(arg spawn_args)"
+  />
+
+    <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
+    <include
+    file="$(find finalarm_moveit_config)/launch/planning_context.launch"
+  >
+        <arg name="load_robot_description" value="true" />
+    </include>
+
+
+    <!-- Given the published joint states, publish tf for the robot links -->
+    <node
+    name="handy_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    respawn="true"
+    output="screen"
+  >
+        <param name="publish_frequency" type="double" value="50.0" />
+    </node>
+
+
+    <!-- We do not have a robot connected, so publish fake joint states -->
+    <node
+    name="joint_state_publisher"
+    pkg="joint_state_publisher"
+    type="joint_state_publisher"
+  >
+        <param name="/use_gui" value="$(arg use_gui)" />
+        <rosparam
+      param="/source_list"
+    >[/move_group/fake_controller_joint_states]</rosparam>
+    </node>
+
+    <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers
+configured by default) -->
+    <include file="$(find finalarm_moveit_config)/launch/move_group.launch">
+        <arg name="allow_trajectory_execution" value="true" />
+        <arg name="fake_execution" value="true" />
+        <arg name="info" value="true" />
+        <arg name="debug" value="$(arg debug)" />
+    </include>
+
+    <!-- Run Rviz and load the default config to see the state of the move_group node -->
+    <include file="$(find finalarm_moveit_config)/launch/moveit_rviz.launch">
+        <arg name="config" value="true" />
+        <arg name="debug" value="$(arg debug)" />
+    </include>
+</launch>
