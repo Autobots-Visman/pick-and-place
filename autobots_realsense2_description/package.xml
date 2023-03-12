@@ -8,8 +8,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>roslaunch</exec_depend>
-
   <exec_depend>realsense2_description</exec_depend>
   <exec_depend>depth_image_proc</exec_depend>
   <exec_depend>xarcro</exec_depend>
+
+  <test_depend>cv_bridge</test_depend>
+  <test_depend>ros_pytest</test_depend>
 </package>

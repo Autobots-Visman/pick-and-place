@@ -10,7 +10,7 @@ aluminum peripheral evaluation case.
   <!-- we use our own fork of the gazebo plugin to simplify our testing,
   specifically being able to turn off gravity. -->
   <xacro:include
-    filename="$(find visman_learning_adventure)/urdf/_d435.gazebo.xacro"
+    filename="$(find autobots_realsense2_description)/urdf/_d435.gazebo.xacro"
   />
   <xacro:include
     filename="$(find realsense2_description)/urdf/_materials.urdf.xacro"

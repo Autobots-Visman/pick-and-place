@@ -6,36 +6,47 @@
   <arg name="topics_ns" default="camera" />
   <arg name="add_plug" default="false" />
   <arg name="publish_pointcloud" default="true" />
-  <arg name="model_description" default="d435_camera" />
   <arg
     name="model"
     default="$(find autobots_realsense2_description)/urdf/d435_camera.urdf.xacro"
   />
+  <arg name="spawn_args" default="" />
 
-  <!-- Load the sdf model only the parameter server -->
-  <param
-    name="$(arg model_description)"
-    command="$(find xacro)/xacro $(arg model)
-      use_nominal_extrinsics:=true
-      publish_pointcloud:=$(arg publish_pointcloud)
-      add_plug:=$(arg add_plug)
-      name:=$(arg name)
-      topics_ns:=$(arg topics_ns)
-      gravity:=0"
-  />
-
-  <node
-    name="robot_state_publisher"
-    pkg="robot_state_publisher"
-    type="robot_state_publisher"
-  >
-    <param name="publish_frequency" type="double" value="5.0" />
-  </node>
-
-  <!-- https://github.com/pal-robotics/realsense_gazebo_plugin/issues/31#issuecomment-1098682872 -->
   <group ns="camera">
-    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
+    <!-- Load the sdf model only the parameter server -->
+    <param
+      name="robot_description"
+      command="$(find xacro)/xacro $(arg model)
+        use_nominal_extrinsics:=true
+        publish_pointcloud:=$(arg publish_pointcloud)
+        add_plug:=$(arg add_plug)
+        name:=$(arg name)
+        topics_ns:=$(arg topics_ns)
+        gravity:=0"
+    />
 
+    <node
+      name="camera_spawner"
+      pkg="gazebo_ros"
+      type="spawn_model"
+      respawn="false"
+      output="screen"
+      args="-urdf
+        -param robot_description
+        -model $(arg name)
+        -unpause $(arg spawn_args)"
+    />
+
+    <node
+      name="robot_state_publisher"
+      pkg="robot_state_publisher"
+      type="robot_state_publisher"
+    >
+      <param name="publish_frequency" type="double" value="5.0" />
+    </node>
+
+    <!-- https://github.com/pal-robotics/realsense_gazebo_plugin/issues/31#issuecomment-1098682872 -->
+    <node pkg="nodelet" type="nodelet" name="nodelet_manager" args="manager" />
     <node
       pkg="nodelet"
       type="nodelet"
