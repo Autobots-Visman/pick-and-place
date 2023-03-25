@@ -4,6 +4,7 @@
   <xacro:arg name="add_plug" default="false" />
   <xacro:arg name="use_mesh" default="true" />
   <xacro:arg name="name" default="camera" />
+  <xacro:arg name="tf_prefix" default="" />
   <xacro:arg name="topics_ns" default="camera" />
   <xacro:arg name="publish_pointcloud" default="false" />
   <xacro:arg name="gravity" default="1" />
@@ -18,6 +19,7 @@
     add_plug="$(arg add_plug)"
     use_mesh="$(arg use_mesh)"
     name="$(arg name)"
+    tf_prefix="$(arg tf_prefix)"
     topics_ns="$(arg topics_ns)"
     publish_pointcloud="$(arg publish_pointcloud)"
     gravity="$(arg gravity)"

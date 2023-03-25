@@ -3,7 +3,6 @@
 License: Apache 2.0. See LICENSE file in root directory.
 Copyright(c) 2017 PAL Robotics, S.L. All Rights Reserved
 This is the Gazebo URDF model for the Intel RealSense D435 camera
-
 https://github.com/rickstaa/realsense-ros/blob/da38e309c2fbe88e45e6148bf5d944486b3e8e98/realsense2_description/urdf/_d435.gazebo.xacro
 -->
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
@@ -12,6 +11,7 @@ https://github.com/rickstaa/realsense-ros/blob/da38e309c2fbe88e45e6148bf5d944486
     name="gazebo_d435"
     params="
         camera_name
+        tf_prefix
         reference_link
         topics_ns
         depth_optical_frame
@@ -143,12 +143,14 @@ https://github.com/rickstaa/realsense-ros/blob/da38e309c2fbe88e45e6148bf5d944486
         <infrared2TopicName>infra2/image_raw</infrared2TopicName>
         <infrared2CameraInfoTopicName
         >infra2/camera_info</infrared2CameraInfoTopicName>
-        <colorOpticalframeName>${color_optical_frame}</colorOpticalframeName>
-        <depthOpticalframeName>${depth_optical_frame}</depthOpticalframeName>
+        <colorOpticalframeName
+        >${tf_prefix}${color_optical_frame}</colorOpticalframeName>
+        <depthOpticalframeName
+        >${tf_prefix}${depth_optical_frame}</depthOpticalframeName>
         <infrared1OpticalframeName
-        >${infrared1_optical_frame}</infrared1OpticalframeName>
+        >${tf_prefix}${infrared1_optical_frame}</infrared1OpticalframeName>
         <infrared2OpticalframeName
-        >${infrared2_optical_frame}</infrared2OpticalframeName>
+        >${tf_prefix}${infrared2_optical_frame}</infrared2OpticalframeName>
         <rangeMinDepth>0.2</rangeMinDepth>
         <rangeMaxDepth>10.0</rangeMaxDepth>
         <pointCloud>${publish_pointcloud}</pointCloud>

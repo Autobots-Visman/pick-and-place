@@ -24,6 +24,7 @@ aluminum peripheral evaluation case.
     params="
         parent *origin
         name:=camera
+        tf_prefix:=''
         use_nominal_extrinsics:=false
         add_plug:=false
         use_mesh:=true
@@ -200,6 +201,7 @@ aluminum peripheral evaluation case.
     <!-- Realsense Gazebo Plugin -->
     <xacro:gazebo_d435
       camera_name="${name}"
+      tf_prefix="${tf_prefix}"
       reference_link="${name}_link"
       topics_ns="${topics_ns}"
       depth_optical_frame="${name}_depth_optical_frame"

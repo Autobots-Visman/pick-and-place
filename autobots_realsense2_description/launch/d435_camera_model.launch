@@ -21,6 +21,7 @@
         publish_pointcloud:=$(arg publish_pointcloud)
         add_plug:=$(arg add_plug)
         name:=$(arg name)
+        tf_prefix:=$(arg name)/
         topics_ns:=$(arg topics_ns)
         gravity:=0"
     />
@@ -45,6 +46,7 @@
       <!-- http://wiki.ros.org/robot_state_publisher/Tutorials/Using%20the%20robot%20state%20publisher%20on%20your%20own%20robot -->
       <remap from="robot_description" to="$(arg name)_description" />
       <param name="publish_frequency" type="double" value="5.0" />
+      <param name="tf_prefix" type="string" value="$(arg name)" />
     </node>
 
     <!-- https://github.com/pal-robotics/realsense_gazebo_plugin/issues/31#issuecomment-1098682872 -->
