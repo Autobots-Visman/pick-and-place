@@ -22,6 +22,7 @@ We focus on the [handy robot](https://github.com/ivaROS/ivaHandy).
 You'll need to include a particular implementation of the realsense-ros-gazebo plugin in your workspace.
 
 ```bash
+git clone git@github.com:ivaROS/ivaDynamixel.git
 git clone git@github.com:ivaROS/ivaHandy.git
 git clone --recurse-submodules git@github.com:rickstaa/realsense-ros-gazebo.git
 ```

@@ -1,0 +1,28 @@
+<launch>
+  <arg name="gui" default="true" />
+  <arg name="spawn_args" default="-x 0 -y 0 -z 0.75" />
+
+  <include file="$(find finalarm_gazebo)/launch/robot_world.launch">
+      <arg name="spawn_args" value="$(arg spawn_args)" />
+  </include>
+
+  <include file="$(find finalarm_moveit_config)/launch/move_group.launch" />
+  <include file="$(find finalarm_moveit_config)/launch/moveit_rviz.launch" />
+
+  <!-- Load the RGBD camera -->
+  <include
+    file="$(find autobots_realsense2_description)/launch/d435_camera_model.launch"
+  >
+      <arg name="spawn_args" value="-x -2.0 -y 0.0 -z 2.0 -P 0.2" />
+  </include>
+
+  <!-- Load rviz -->
+  <node
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(find autobots_realsense2_description)/rviz/camera.rviz"
+    required="true"
+    if="$(arg gui)"
+  />
+</launch>
