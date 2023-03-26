@@ -1,0 +1,8 @@
+<launch>
+  <node
+    name="aruco_gazebo_harness"
+    pkg="autobots_calibration"
+    type="aruco_gazebo_harness.py"
+    output="screen"
+  />
+</launch>

@@ -1,0 +1,10 @@
+<launch>
+  <param name="test_module" value="$(find autobots_calibration)/tests" />
+  <test
+    test-name="test_aruco_gazebo_harness"
+    pkg="ros_pytest"
+    type="ros_pytest_runner"
+    args="-k test_aruco_gazebo_harness -vvv -s"
+    time-limit="60.0"
+  />
+</launch>
