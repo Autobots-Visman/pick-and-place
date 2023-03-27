@@ -1,0 +1,20 @@
+<launch>
+  <!-- include empty world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="gui" value="true" />
+  </include>
+
+  <!-- spawn a camera for testing -->
+  <include
+    file="$(find autobots_realsense2_description)/launch/d435_camera_model.launch"
+  >
+    <arg
+      name="spawn_args"
+      value="-x -0.25 -y 0.65 -z 1.66 -R 0.2 -P 0.75 -Y -0.5"
+    />
+  </include>
+
+  <include
+    file="$(find autobots_calibration)/launch/aruco_gazebo_harness.launch"
+  />
+</launch>

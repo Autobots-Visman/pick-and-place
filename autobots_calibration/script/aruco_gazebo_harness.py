@@ -24,11 +24,6 @@ def parse_args():
     return args
 
 
-def throw_when_status_stable(msg: CameraStatus):
-    if msg.status == CameraStatus.STABLE:
-        raise rospy.ROSInterruptException("Camera calibration parameters are stable")
-
-
 def main():
     args = parse_args()
     rospy.init_node("aruco_harness", anonymous=True)

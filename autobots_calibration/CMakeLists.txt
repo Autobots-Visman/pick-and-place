@@ -20,7 +20,7 @@ catkin_package(CATKIN_DEPENDS message_runtime)
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 # add scripts
-file(GLOB SCRIPT_FILES scripts/*)
+file(GLOB SCRIPT_FILES script/*)
 install(
   PROGRAMS ${SCRIPT_FILES}
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
