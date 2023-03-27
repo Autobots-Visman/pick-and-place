@@ -1,5 +1,4 @@
 import time
-from pathlib import Path
 
 import pytest
 import roslaunch
@@ -8,16 +7,6 @@ import rospy
 from autobots_calibration.msg import CameraStatus
 
 SLEEP_TIME = 1
-
-
-@pytest.fixture(autouse=True)
-def init_node():
-    rospy.init_node("test_aruco_gazebo_harness", anonymous=True)
-
-
-@pytest.fixture()
-def launch_path():
-    return Path(__file__).parent.parent / "launch"
 
 
 @pytest.fixture()

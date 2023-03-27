@@ -1,0 +1,19 @@
+<launch>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+  <arg name="gui" value="false" />
+  </include>
+  <include file="$(find autobots_calibration)/launch/spawn_aruco_tile.launch" />
+  <arg name="pitch" value="$(eval 3.14/2)" />
+  <include file="$(find autobots_realsense2_description)/launch/d435_camera_model.launch">
+    <arg name="spawn_args" value="-z .5 -P $(arg pitch)" />
+  </include>
+
+  <param name="test_module" value="$(find autobots_calibration)/tests" />
+  <test
+    test-name="test_aruco_tile_model"
+    pkg="ros_pytest"
+    type="ros_pytest_runner"
+    args="-k test_aruco_tile_model -vvv -s"
+    time-limit="60.0"
+  />
+</launch>

@@ -1,0 +1,20 @@
+<launch>
+  <arg name="spawn_args" default="" />
+  <param
+    name="aruco_tile_description"
+    textfile="$(find autobots_calibration)/models/aruco_tile/description.sdf"
+  />
+  <node
+    name="model_spawner"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    respawn="false"
+    output="screen"
+    args="
+      -sdf
+      -param aruco_tile_description
+      -model aruco_tile
+      $(arg spawn_args)
+    "
+  />
+</launch>

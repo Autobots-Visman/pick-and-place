@@ -15,21 +15,5 @@
   <include
     file="$(find autobots_calibration)/launch/aruco_gazebo_harness.launch"
   />
-
-  <param
-    name="aruco_tile_description"
-    textfile="$(find autobots_calibration)/models/aruco_tile/description.sdf"
-  />
-  <node
-    name="model_spawner"
-    pkg="gazebo_ros"
-    type="spawn_model"
-    respawn="false"
-    output="screen"
-    args="
-      -sdf
-      -param aruco_tile_description
-      -model aruco_tile
-    "
-  />
+  <include file="$(find autobots_calibration)/launch/spawn_aruco_tile.launch" />
 </launch>
