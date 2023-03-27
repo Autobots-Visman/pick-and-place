@@ -1,0 +1,14 @@
+material Grid/Simple
+{
+   technique
+   {
+      pass
+      {
+         texture_unit
+         {
+          texture aruco.png
+          scale 1 1
+         }
+      }
+   }
+}

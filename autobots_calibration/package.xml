@@ -18,4 +18,12 @@
   <exec_depend>cv_bridge</exec_depend>
 
   <test_depend>ros_pytest</test_depend>
+
+  <export>
+    <!-- https://answers.gazebosim.org/question/6568/uri-paths-to-packages-in-the-sdf-model-file/?answer=7664#post-id-7664 -->
+    <!-- gazebo_ros_paths_plugin automatically adds these to
+        GAZEBO_PLUGIN_PATH and GAZEBO_MODEL_PATH when you do this export inside
+        the package.xml file. You can than use URIs of type model://my_package/stuff. -->
+    <gazebo_ros gazebo_model_path="${prefix}/models" />
+  </export>
 </package>

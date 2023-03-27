@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <model name="aruco_tile">
+    <static>true</static>
+    <link name="tile_link">
+      <!-- https://classic.gazebosim.org/tutorials?tut=color_model -->
+      <visual name="tile_visual">
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.1 0.1 0</size>
+          </box>
+        </geometry>
+        <material>
+          <!-- white box -->
+          <ambient>1 1 1 1</ambient>
+          <diffuse>1 1 1 1</diffuse>
+          <!-- https://answers.ros.org/question/257694/questions-to-sdf-urdf-xacro-material-textures-using-gazebo/ -->
+          <script>
+            <uri>model://aruco_tile/materials/scripts</uri>
+            <uri>model://aruco_tile/materials/textures</uri>
+            <name>Grid/Simple</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>
