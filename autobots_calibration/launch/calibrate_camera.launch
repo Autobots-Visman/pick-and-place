@@ -1,0 +1,30 @@
+<launch>
+  <!-- args for calibration parameters -->
+  <arg name="camera_info_topic" default="/camera/color/camera_info" />
+  <arg name="image_topic" default="/camera/color/image_raw" />
+  <arg name="marker_length" default="0.1" />
+  <arg name="max_frames" default="100" />
+
+
+  <!-- let's republish the input color stream -->
+  <remap
+    from="/calibration/camera/color/camera_info"
+    to="$(arg camera_info_topic)"
+  />
+
+  <!-- now let's run our calibration script -->
+  <node
+    name="calibrate_camera"
+    pkg="autobots_calibration"
+    type="calibrate_camera.py"
+    output="screen"
+    args="
+      --camera-info-topic /calibration/camera/color/camera_info
+      --image-topic $(arg image_topic)
+      --output-topic /calibration/camera/camera_extrinsics
+      --status-topic /calibration/camera/status
+      --marker-length $(arg marker_length)
+      --max-frames $(arg max_frames)
+    "
+  />
+</launch>

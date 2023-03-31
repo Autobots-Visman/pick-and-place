@@ -10,13 +10,6 @@ from autobots_calibration.msg import CameraStatus
 def parse_args():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--camera-info-topic", type=str, default="/camera/color/camera_info"
-    )
-    parser.add_argument("--image-topic", type=str, default="/camera/color/image_raw")
-    parser.add_argument(
-        "--output-topic", type=str, default="/calibration/camera/matrix_camera_link"
-    )
-    parser.add_argument(
         "--status-topic", type=str, default="/calibration/camera/status"
     )
     # ignore any other args
