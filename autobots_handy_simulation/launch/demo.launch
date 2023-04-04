@@ -50,4 +50,14 @@
     "
   />
 
+  <!-- run the calibration -->
+  <include
+    file="$(find autobots_calibration)/launch/aruco_gazebo_harness.launch"
+  />
+  <include file="$(find autobots_calibration)/launch/spawn_aruco_tile.launch">
+    <!-- put the tile on the table in front of the robot -->
+    <arg name="spawn_args" value="-x 0.5 -z 1.03" />
+  </include>
+  <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
+
 </launch>

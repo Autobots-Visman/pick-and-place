@@ -5,7 +5,7 @@
     textfile="$(find autobots_calibration)/models/aruco_tile/description.sdf"
   />
   <node
-    name="model_spawner"
+    name="aruco_tile_spawner"
     pkg="gazebo_ros"
     type="spawn_model"
     respawn="false"

@@ -85,6 +85,7 @@ def main():
 
     # done!
     print("calibration complete")
+    print(f"M_CL:{calibrator.M_CL}")
 
     rospy.spin()
 
