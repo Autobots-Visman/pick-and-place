@@ -4,7 +4,7 @@
 #
 #    pip-compile
 #
-camera @ git+https://github.com/ivapylibs/camera.git@2.1.0
+camera @ git+https://github.com/ivapylibs/camera.git@2.2.0
     # via -r requirements.in
 contourpy==1.0.7
     # via matplotlib

@@ -16,4 +16,7 @@
     file="$(find autobots_calibration)/launch/aruco_gazebo_harness.launch"
   />
   <include file="$(find autobots_calibration)/launch/spawn_aruco_tile.launch" />
+
+  <!-- run the calibration -->
+  <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
 </launch>

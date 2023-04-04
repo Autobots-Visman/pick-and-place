@@ -56,7 +56,12 @@ def main():
     camera_info = rospy.wait_for_message(args.camera_info_topic, CameraInfo)
     intrinsic_mat = np.array(camera_info.K).reshape(3, 3)
     calibrator = CtoW_Calibrator_aruco(
-        intrinsic_mat, markerLength_CL=args.marker_length, maxFrames=args.max_frames
+        intrinsic_mat,
+        markerLength_CL=args.marker_length,
+        maxFrames=args.max_frames,
+        flag_vis_extrinsic=False,
+        flag_print_MCL=False,
+        aruco_dict=cv2.aruco.DICT_5X5_250,
     )
 
     # wait for the camera to come online
@@ -80,6 +85,8 @@ def main():
 
     # done!
     print("calibration complete")
+
+    rospy.spin()
 
 
 if __name__ == "__main__":
