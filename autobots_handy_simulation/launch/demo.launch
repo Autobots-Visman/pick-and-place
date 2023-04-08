@@ -59,5 +59,4 @@
     <arg name="spawn_args" value="-x 0.5 -z 1.03" />
   </include>
   <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
-
 </launch>
