@@ -6,6 +6,8 @@ catkin_package(CATKIN_DEPENDS)
 
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
+include_directories(${catkin_INCLUDE_DIRS})
+
 if(CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
     # for each test in the test directory add it as a test

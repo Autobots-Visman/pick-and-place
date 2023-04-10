@@ -26,6 +26,8 @@ install(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+include_directories(${catkin_INCLUDE_DIRS})
+
 # add tests
 if(CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)

@@ -12,6 +12,8 @@ install(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+include_directories(${catkin_INCLUDE_DIRS})
+
 if(CATKIN_ENABLE_TESTING)
     find_package(rostest REQUIRED)
     file(GLOB TEST_LAUNCH_FILES tests/*.test)
