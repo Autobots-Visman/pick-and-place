@@ -2,7 +2,42 @@
 
 ## quickstart
 
-### dependencies and building
+### docker
+
+You can use docker to run most of the simulation.
+You will not be able to run the grasping network module if you do not have an nvidia gpu.
+Make sure you've checked out the repository with submodules:
+
+```bash
+git clone --recurse-submodules git@github.com:Autobots-Visman/pick-and-place.git
+
+# or after the fact
+git submodule update --init --recursive
+```
+
+Build the docker images:
+
+```bash
+docker compose build
+```
+
+Then run the tests to verify that everything is working:
+
+```bash
+docker compose run --rm base catkin test \
+    autobots_realsense2_description
+
+# TODO: calibration tests are currently broken
+# TODO: handy simulation is missing tests
+```
+
+Also verify that you can successfully launch the simulation via docker.
+
+```bash
+docker compose run --rm base roslaunch autobots_handy_simulation demo.launch
+```
+
+### (manual) dependencies and building
 
 Ensure you've installed ros-noetic-desktop on ubuntu 20.04 packages and create a new catkin workspace.
 

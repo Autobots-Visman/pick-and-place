@@ -2,6 +2,20 @@
 version: "3.8"
 
 services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.noetic
+    image: autobots-visman/pick-and-place:latest
+    network_mode: host
+    volumes:
+      - ./:/catkin_ws/src/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/.Xauthority:/root/.Xauthority
+    environment:
+      DISPLAY: $DISPLAY
+    # TODO: gazebo runs better with a GPU, but this would require inheriting
+    # from the cuda image and installing ros
   gknet-gpu:
     build:
       context: vendor/GraspKpNet
