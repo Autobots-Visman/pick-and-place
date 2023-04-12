@@ -1,0 +1,3 @@
+[submodule "vendor/GraspKpNet"]
+	path = vendor/GraspKpNet
+	url = git@github.com:ivalab/GraspKpNet.git

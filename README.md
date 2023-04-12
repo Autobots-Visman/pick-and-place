@@ -25,6 +25,10 @@ You'll need to include a particular implementation of the realsense-ros-gazebo p
 git clone git@github.com:ivaROS/ivaDynamixel.git
 git clone git@github.com:ivaROS/ivaHandy.git
 git clone --recurse-submodules git@github.com:rickstaa/realsense-ros-gazebo.git
+git clone git@github.com:acmiyaguchi/GraspKpNet.git
+
+# clone this repo
+git clone --recurse-submodules git@github.com:Autobots-Visman/pick-and-place.git
 ```
 
 Install all the other dependencies via [`rosdep`](http://wiki.ros.org/rosdep):
