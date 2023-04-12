@@ -24,7 +24,7 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find autobots_realsense2_description)/rviz/camera.rviz"
+    args="-d $(find autobots_handy_simulation)/rviz/camera.rviz"
     required="true"
     if="$(arg gui)"
   />

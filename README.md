@@ -40,3 +40,21 @@ To create a new project:
 ```bash
 catkin create pkg --rosdistro noetic ${package_name}
 ```
+
+### running the simulation
+
+```bash
+# launch the gazebo world
+roslaunch autobots_handy_simulation demo.launch
+
+# spawn some random objects
+rosrun autobots_handy_simulation spawn_random_objects.py
+
+# TODO: configure a docker container from this repository
+# from GraspKpNet
+
+docker compose run --rm gpu \
+    roslaunch gknet_perception detect.launch \
+        color_image_topic:=/camera/color/image_raw \
+        depth_image_topic:=/camera/aligned_depth_to_color/image_raw
+```
