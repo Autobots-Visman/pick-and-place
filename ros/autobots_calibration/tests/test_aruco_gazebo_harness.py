@@ -3,7 +3,6 @@ import time
 import pytest
 import roslaunch
 import rospy
-
 from autobots_calibration.msg import CameraStatus
 
 SLEEP_TIME = 1

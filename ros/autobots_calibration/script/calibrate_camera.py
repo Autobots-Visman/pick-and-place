@@ -5,11 +5,10 @@ from argparse import ArgumentParser
 import cv2
 import numpy as np
 import rospy
+from autobots_calibration.msg import CameraExtrinsics, CameraStatus
 from camera.extrinsic.aruco import CtoW_Calibrator_aruco
 from cv_bridge import CvBridge
 from sensor_msgs.msg import CameraInfo, Image
-
-from autobots_calibration.msg import CameraExtrinsics, CameraStatus
 
 
 def parse_args():

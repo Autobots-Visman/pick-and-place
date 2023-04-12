@@ -3,7 +3,6 @@
 from argparse import ArgumentParser
 
 import rospy
-
 from autobots_calibration.msg import CameraStatus
 
 
