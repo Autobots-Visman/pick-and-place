@@ -34,13 +34,31 @@ docker compose run --rm base catkin test \
 Also run the gknet tests to verify that it is working correctly:
 
 ```bash
-docker compose run --rm gknet-gpu catkin test
+docker compose run --rm gknet catkin test
 ```
 
 Also verify that you can successfully launch the simulation via docker.
 
 ```bash
-docker compose run --rm base roslaunch autobots_handy_simulation demo.launch
+# manually running using the base command
+docker compose run --rm base-gpu roslaunch autobots_handy_simulation gazebo.launch
+```
+
+Now you can run the entire simulation via docker:
+
+```bash
+docker compose up
+
+# or
+docker compose run --rm gazebo
+docker compose run --rm rviz
+docker compose run --rm gknet
+```
+
+Then spawn some objects for testing:
+
+```bash
+docker compose run --rm base rosrun autobots_handy_simulation spawn_random_objects.py
 ```
 
 ### (manual) dependencies and building
@@ -66,6 +84,7 @@ You'll need to include a particular implementation of the realsense-ros-gazebo p
 git clone git@github.com:ivaROS/ivaDynamixel.git
 git clone git@github.com:ivaROS/ivaHandy.git
 git clone --recurse-submodules git@github.com:rickstaa/realsense-ros-gazebo.git
+git clone https://github.com/ivalab/simData.git
 git clone git@github.com:acmiyaguchi/GraspKpNet.git
 
 # clone this repo
@@ -84,22 +103,4 @@ To create a new project:
 
 ```bash
 catkin create pkg --rosdistro noetic ${package_name}
-```
-
-### running the simulation
-
-```bash
-# launch the gazebo world
-roslaunch autobots_handy_simulation demo.launch
-
-# spawn some random objects
-rosrun autobots_handy_simulation spawn_random_objects.py
-
-# TODO: configure a docker container from this repository
-# from GraspKpNet
-
-docker compose run --rm gpu \
-    roslaunch gknet_perception detect.launch \
-        color_image_topic:=/camera/color/image_raw \
-        depth_image_topic:=/camera/aligned_depth_to_color/image_raw
 ```

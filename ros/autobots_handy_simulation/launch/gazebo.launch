@@ -1,5 +1,5 @@
 <launch>
-  <arg name="gui" default="true" />
+  <arg name="rviz" default="true" />
   <arg name="spawn_args" default="-x 0 -y 0 -z 1.00" />
 
   <include file="$(find finalarm_gazebo)/launch/robot_world.launch">
@@ -7,7 +7,6 @@
   </include>
 
   <include file="$(find finalarm_moveit_config)/launch/move_group.launch" />
-  <include file="$(find finalarm_moveit_config)/launch/moveit_rviz.launch" />
 
   <!-- Load the RGBD camera -->
   <include
@@ -18,16 +17,6 @@
       value="-x -0.25 -y 0.65 -z 1.66 -R 0.2 -P 0.75 -Y -0.5"
     />
   </include>
-
-  <!-- Load rviz -->
-  <node
-    name="rviz"
-    pkg="rviz"
-    type="rviz"
-    args="-d $(find autobots_handy_simulation)/rviz/camera.rviz"
-    required="true"
-    if="$(arg gui)"
-  />
 
   <!-- Load a table into the scene, rotated 90 degrees and offset from center -->
   <param
@@ -59,4 +48,10 @@
     <arg name="spawn_args" value="-x 0.5 -z 1.03" />
   </include>
   <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
+
+  <!-- load rviz -->
+  <include
+    file="$(find autobots_handy_simulation)/launch/rviz.launch"
+    if="$(arg rviz)"
+  />
 </launch>

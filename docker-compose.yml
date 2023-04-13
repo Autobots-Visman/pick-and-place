@@ -6,42 +6,66 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.noetic
-    image: autobots-visman/pick-and-place:latest
-    network_mode: host
-    volumes:
-      - ./:/catkin_ws/src/app
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/.Xauthority:/root/.Xauthority
-      - /usr/lib/wsl:/usr/lib/wsl
-    environment:
-      DISPLAY: $DISPLAY
-      # TODO: this is wsl2 only
-      LD_LIBRARY_PATH: /usr/lib/wsl/lib
-    # TODO: gazebo runs better with a GPU, but this would require inheriting
-    # from the cuda image and installing ros
-    deploy:
+    # we're just re-use the image, and not carry over building the image again
+    # to other containers in the stack
+    <<: &base
+      image: autobots-visman/pick-and-place:latest
+      network_mode: host
+      # We also add some settings for WSL2 opengl gpu acceleration, which should
+      # be ignored by other platforms
+      # https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md
+      volumes:
+        - ./:/catkin_ws/src/app
+        - /tmp/.X11-unix:/tmp/.X11-unix
+        - ~/.Xauthority:/root/.Xauthority
+        - /usr/lib/wsl:/usr/lib/wsl
+      environment: &env
+        DISPLAY: $DISPLAY
+        LD_LIBRARY_PATH: /usr/lib/wsl/lib
+  base-gpu: &base-gpu
+    <<: *base
+    deploy: &gpu-deploy
       resources:
         reservations:
           devices:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-  gknet-gpu:
+  core:
+    restart: always
+    image: ros:noetic-ros-core-focal
+    command: stdbuf -o L roscore
+    network_mode: host
+  gazebo:
+    <<: *base-gpu
+    command: roslaunch --wait autobots_handy_simulation gazebo.launch rviz:=false
+    depends_on:
+      - core
+  rviz:
+    # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
+    # with software rendering
+    <<: *base
+    command: roslaunch --wait autobots_handy_simulation rviz.launch
+    depends_on:
+      - gazebo
+  gknet:
     build:
       context: vendor/GraspKpNet
       dockerfile: docker/Dockerfile.noetic
     image: ivalab/gknet:latest
+    command: >
+      roslaunch --wait gknet_perception detect.launch
+        color_image_topic:=/camera/color/image_raw
+        depth_image_topic:=/camera/aligned_depth_to_color/image_raw
     network_mode: host
     shm_size: 2gb
     volumes:
+      - ./vendor/GraspKpNet:/catkin_ws/src/app
+      - /catkin_ws/src/app/models/
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ~/.Xauthority:/root/.Xauthority
     environment:
       DISPLAY: $DISPLAY
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+    deploy: *gpu-deploy
+    depends_on:
+      - core

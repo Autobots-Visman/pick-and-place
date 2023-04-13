@@ -88,7 +88,8 @@ RUN mkdir src
 RUN cd src && \
     git clone https://github.com/ivaROS/ivaDynamixel.git && \
     git clone https://github.com/ivaROS/ivaHandy.git && \
-    git clone --recurse-submodules https://github.com/rickstaa/realsense-ros-gazebo.git
+    git clone --recurse-submodules https://github.com/rickstaa/realsense-ros-gazebo.git && \
+    git clone https://github.com/ivalab/simData.git
     # git clone https://github.com/ivalab/GraspKpNet.git
 
 # TODO: remove this once the gknet ros module is merged upstream
@@ -117,12 +118,14 @@ ADD . ./
 # build the workspace
 WORKDIR /catkin_ws
 
-RUN rosdep init && rosdep update && \
-    catkin config --init --extend /opt/ros/noetic && \
+RUN catkin config --init --extend /opt/ros/noetic && \
+    rosdep init && \
+    rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y && \
     catkin build
 
 WORKDIR /catkin_ws/src/app
 COPY ./docker/bin/ros_entrypoint.sh /
-ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
+ENTRYPOINT ["/ros_entrypoint.sh",  "stdbuf", "-o", "L"]
+# exit after starting
+CMD ["true"]
