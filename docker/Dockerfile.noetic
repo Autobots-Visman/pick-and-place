@@ -1,4 +1,20 @@
-FROM ros:noetic-ros-base-focal
+FROM nvidia/cuda:11.7.0-runtime-ubuntu20.04
+
+# take the core ros image on top of the cuda focal image; this allows for gpu
+# acceleration on gazebo
+# https://github.com/osrf/docker_images/blob/master/ros/noetic/ubuntu/focal/ros-core/Dockerfile
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV ROS_DISTRO noetic
+RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ros-noetic-ros-core=1.5.0-1* \
+    python3-catkin-tools \
+    python3-rosdep \
+    && \
+    apt clean
 
 RUN apt update && \
     apt install -y --no-install-recommends \
@@ -24,9 +40,7 @@ RUN apt update && \
 #
 RUN apt update && \
     apt install -y --no-install-recommends \
-    # make sure we have catkin
-    python3-catkin-tools \
-    # and then the dependencies we get from above
+    # dependencies we get from above
     ros-noetic-robot-state-publisher \
     ros-noetic-rviz \
     ros-noetic-joint-state-publisher \
@@ -84,11 +98,27 @@ ADD vendor/GraspKpNet /catkin_ws/src/GraspKpNet
 WORKDIR /catkin_ws/src/app
 ADD requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+# install updated opengl; this should be okay on a linux host too
+# https://answers.ros.org/question/394135/robot-meshes-not-visible-in-rviz-windows11-wsl2/
+RUN apt update && \
+    apt install -y --no-install-recommends \
+    software-properties-common \
+    && \
+    add-apt-repository ppa:oibaf/graphics-drivers && \
+    apt update && \
+    apt install -y --no-install-recommends \
+    mesa-utils \
+    && \
+    apt clean
+
 ADD . ./
 
 # build the workspace
 WORKDIR /catkin_ws
-RUN catkin config --init --extend /opt/ros/noetic && \
+
+RUN rosdep init && rosdep update && \
+    catkin config --init --extend /opt/ros/noetic && \
     rosdep install --from-paths src --ignore-src -r -y && \
     catkin build
 

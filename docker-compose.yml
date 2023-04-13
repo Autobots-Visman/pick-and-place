@@ -12,10 +12,20 @@ services:
       - ./:/catkin_ws/src/app
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ~/.Xauthority:/root/.Xauthority
+      - /usr/lib/wsl:/usr/lib/wsl
     environment:
       DISPLAY: $DISPLAY
+      # TODO: this is wsl2 only
+      LD_LIBRARY_PATH: /usr/lib/wsl/lib
     # TODO: gazebo runs better with a GPU, but this would require inheriting
     # from the cuda image and installing ros
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
   gknet-gpu:
     build:
       context: vendor/GraspKpNet
