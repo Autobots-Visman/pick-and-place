@@ -31,6 +31,12 @@ docker compose run --rm base catkin test \
 # TODO: handy simulation is missing tests
 ```
 
+Also run the gknet tests to verify that it is working correctly:
+
+```bash
+docker compose run --rm gknet-gpu catkin test
+```
+
 Also verify that you can successfully launch the simulation via docker.
 
 ```bash
