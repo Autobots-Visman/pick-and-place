@@ -15,6 +15,12 @@ git clone --recurse-submodules git@github.com:Autobots-Visman/pick-and-place.git
 git submodule update --init --recursive
 ```
 
+Let's grant docker access to the X11 display, which is used throughout the program for visualization.
+
+```bash
+xhost +local:docker
+```
+
 Build the docker images:
 
 ```bash
