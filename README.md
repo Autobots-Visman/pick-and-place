@@ -34,7 +34,7 @@ docker compose run --rm base catkin test \
 Also run the gknet tests to verify that it is working correctly:
 
 ```bash
-docker compose run --rm gknet catkin test
+docker compose run --rm --no-deps gknet catkin test
 ```
 
 Also verify that you can successfully launch the simulation via docker.
@@ -61,7 +61,29 @@ Then spawn some objects for testing:
 docker compose run --rm base rosrun autobots_handy_simulation spawn_random_objects.py
 ```
 
+#### Notes
+
+##### Clean up your containers
+
+Make sure you clean up the docker containers after you're done:
+
+```bash
+docker compose down
+```
+
+When you run `docker ps`, there should be no running containers.
+
+##### Docker tidbits
+
+As a note to the docker neophytes, here are some of the flags above:
+
+- `--rm`: remove the container after it exits.
+- `--no-deps`: do not start the dependencies of the service. We might use this if we want to run a container without starting the `core` container which is the master node for coordinating between services.
+
 ### (manual) dependencies and building
+
+It's also useful to be able to run the packages from a host machine.
+Rviz is going to be significantly more performant on the host, and it can be nice to start up random ROS utilities.
 
 Ensure you've installed ros-noetic-desktop on ubuntu 20.04 packages and create a new catkin workspace.
 
@@ -81,14 +103,14 @@ We focus on the [handy robot](https://github.com/ivaROS/ivaHandy).
 You'll need to include a particular implementation of the realsense-ros-gazebo plugin in your workspace.
 
 ```bash
-git clone git@github.com:ivaROS/ivaDynamixel.git
-git clone git@github.com:ivaROS/ivaHandy.git
-git clone --recurse-submodules git@github.com:rickstaa/realsense-ros-gazebo.git
+git clone https://github.com/ivaROS/ivaDynamixel.git
+git clone https://github.com/ivaROS/ivaHandy.git
+git clone --recurse-submodules https://github.com/rickstaa/realsense-ros-gazebo.git
 git clone https://github.com/ivalab/simData.git
-git clone git@github.com:acmiyaguchi/GraspKpNet.git
+git clone https://github.com/ivalab/GraspKpNet.git
 
 # clone this repo
-git clone --recurse-submodules git@github.com:Autobots-Visman/pick-and-place.git
+git clone --recurse-submodules https://github.com/Autobots-Visman/pick-and-place.git
 ```
 
 Install all the other dependencies via [`rosdep`](http://wiki.ros.org/rosdep):

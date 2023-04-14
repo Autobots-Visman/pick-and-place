@@ -83,23 +83,6 @@ RUN apt update && \
 
 RUN pip install --upgrade pip wheel cython
 
-WORKDIR /catkin_ws
-RUN mkdir src
-RUN cd src && \
-    git clone https://github.com/ivaROS/ivaDynamixel.git && \
-    git clone https://github.com/ivaROS/ivaHandy.git && \
-    git clone --recurse-submodules https://github.com/rickstaa/realsense-ros-gazebo.git && \
-    git clone https://github.com/ivalab/simData.git
-    # git clone https://github.com/ivalab/GraspKpNet.git
-
-# TODO: remove this once the gknet ros module is merged upstream
-ADD vendor/GraspKpNet /catkin_ws/src/GraspKpNet
-
-# add the current ros module and install the requirements
-WORKDIR /catkin_ws/src/app
-ADD requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
 # install updated opengl; this should be okay on a linux host too
 # https://answers.ros.org/question/394135/robot-meshes-not-visible-in-rviz-windows11-wsl2/
 RUN apt update && \
@@ -112,6 +95,22 @@ RUN apt update && \
     mesa-utils \
     && \
     apt clean
+
+WORKDIR /catkin_ws
+RUN mkdir src
+RUN cd src && \
+    git clone https://github.com/ivaROS/ivaDynamixel.git && \
+    git clone https://github.com/ivaROS/ivaHandy.git && \
+    git clone --recurse-submodules https://github.com/rickstaa/realsense-ros-gazebo.git && \
+    git clone https://github.com/ivalab/simData.git
+
+# TODO: remove this once the gknet ros module is merged upstream
+ADD vendor/GraspKpNet /catkin_ws/src/GraspKpNet
+
+# add the current ros module and install the requirements
+WORKDIR /catkin_ws/src/app
+ADD requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
 ADD . ./
 

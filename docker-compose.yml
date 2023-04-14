@@ -5,7 +5,7 @@ services:
   base:
     build:
       context: .
-      dockerfile: docker/Dockerfile.noetic
+      dockerfile: docker/Dockerfile
     # we're just re-use the image, and not carry over building the image again
     # to other containers in the stack
     <<: &base
@@ -32,7 +32,6 @@ services:
               count: 1
               capabilities: [gpu]
   core:
-    restart: always
     image: ros:noetic-ros-core-focal
     command: stdbuf -o L roscore
     network_mode: host
@@ -43,7 +42,8 @@ services:
       - core
   rviz:
     # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
-    # with software rendering
+    # with software rendering. This runs incredibly slow inside of docker, so
+    # prefer running rviz outside of docker.
     <<: *base
     command: roslaunch --wait autobots_handy_simulation rviz.launch
     depends_on:
@@ -51,17 +51,13 @@ services:
   gknet:
     build:
       context: vendor/GraspKpNet
-      dockerfile: docker/Dockerfile.noetic
+      dockerfile: docker/Dockerfile
     image: ivalab/gknet:latest
-    command: >
-      roslaunch --wait gknet_perception detect.launch
-        color_image_topic:=/camera/color/image_raw
-        depth_image_topic:=/camera/aligned_depth_to_color/image_raw
+    command: roslaunch --wait gknet_perception detect.launch
     network_mode: host
     shm_size: 2gb
     volumes:
       - ./vendor/GraspKpNet:/catkin_ws/src/app
-      - /catkin_ws/src/app/models/
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ~/.Xauthority:/root/.Xauthority
     environment:
