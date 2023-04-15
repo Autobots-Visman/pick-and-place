@@ -21,6 +21,7 @@ services:
         - /usr/lib/wsl:/usr/lib/wsl
       environment: &env
         DISPLAY: $DISPLAY
+        QT_X11_NO_MITSHM: 1
         LD_LIBRARY_PATH: /usr/lib/wsl/lib
   base-gpu: &base-gpu
     <<: *base
