@@ -57,7 +57,7 @@ services:
     shm_size: 2gb
     <<: &gknet-base
       image: ivalab/gknet:latest
-      command: roslaunch --wait gknet_perception detect.launch
+      command: roslaunch --wait gknet_perception detect.launch detect_args:="--prometheus-port 8080"
       network_mode: host
       volumes:
         - ./vendor/GraspKpNet:/catkin_ws/src/app
