@@ -31,4 +31,5 @@ repos:
     rev: v2.2.1
     hooks:
       - id: codespell
+        args: ["--ignore-words-list=ro"]
         exclude: .ipynb

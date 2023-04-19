@@ -16,9 +16,9 @@ services:
       # https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md
       volumes:
         - ./:/catkin_ws/src/app
-        - /tmp/.X11-unix:/tmp/.X11-unix
-        - ~/.Xauthority:/root/.Xauthority
-        - /usr/lib/wsl:/usr/lib/wsl
+        - /tmp/.X11-unix:/tmp/.X11-unix:ro
+        - ~/.Xauthority:/root/.Xauthority:ro
+        - /usr/lib/wsl:/usr/lib/wsl:ro
       environment: &env
         DISPLAY: $DISPLAY
         QT_X11_NO_MITSHM: 1
@@ -41,28 +41,36 @@ services:
     command: roslaunch --wait autobots_handy_simulation gazebo.launch rviz:=false
     depends_on:
       - core
-  rviz:
+  moveit-rviz:
     # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
     # with software rendering. This runs incredibly slow inside of docker, so
     # prefer running rviz outside of docker.
     <<: *base
-    command: roslaunch --wait autobots_handy_simulation rviz.launch
+    command: roslaunch --wait finalarm_moveit_config moveit_rviz.launch
     depends_on:
       - gazebo
   gknet:
     build:
       context: vendor/GraspKpNet
       dockerfile: docker/Dockerfile
-    image: ivalab/gknet:latest
-    command: roslaunch --wait gknet_perception detect.launch
-    network_mode: host
-    shm_size: 2gb
-    volumes:
-      - ./vendor/GraspKpNet:/catkin_ws/src/app
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/.Xauthority:/root/.Xauthority
-    environment:
-      DISPLAY: $DISPLAY
     deploy: *gpu-deploy
-    depends_on:
-      - core
+    shm_size: 2gb
+    <<: &gknet-base
+      image: ivalab/gknet:latest
+      command: roslaunch --wait gknet_perception detect.launch
+      network_mode: host
+      volumes:
+        - ./vendor/GraspKpNet:/catkin_ws/src/app
+        - /tmp/.X11-unix:/tmp/.X11-unix:ro
+        - ~/.Xauthority:/root/.Xauthority:ro
+      environment:
+        DISPLAY: $DISPLAY
+        QT_X11_NO_MITSHM: 1
+      depends_on:
+        - core
+  filter-gui:
+    <<: *gknet-base
+    command: rosrun gknet_perception filter_gui.py
+  stream-annotated-image:
+    <<: *base
+    command: rosrun gknet_perception stream_camera.py --image-topic /gknet/annotated_image
