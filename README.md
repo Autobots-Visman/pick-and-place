@@ -15,6 +15,13 @@ git clone --recurse-submodules git@github.com:Autobots-Visman/pick-and-place.git
 git submodule update --init --recursive
 ```
 
+When you pull changes, make sure to update the submodule as well:
+
+```bash
+git pull
+git submodule update --recursive
+```
+
 Let's grant docker access to the X11 display, which is used throughout the program for visualization.
 
 ```bash
@@ -54,11 +61,6 @@ Now you can run the entire simulation via docker:
 
 ```bash
 docker compose up
-
-# or
-docker compose run --rm gazebo
-docker compose run --rm rviz
-docker compose run --rm gknet
 ```
 
 Then spawn some objects for testing:
@@ -67,9 +69,15 @@ Then spawn some objects for testing:
 docker compose run --rm base rosrun autobots_handy_simulation spawn_random_objects.py
 ```
 
-#### Notes
+#### WSL2
 
-##### Clean up your containers
+If you're using WSL2 with docker and a GPU, you may need to use the following docker override for gazebo to run properly:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.wsl.yml up
+```
+
+#### Clean up your containers
 
 Make sure you clean up the docker containers after you're done:
 
@@ -79,7 +87,7 @@ docker compose down
 
 When you run `docker ps`, there should be no running containers.
 
-##### Docker tidbits
+#### Docker tidbits
 
 As a note to the docker neophytes, here are some of the flags above:
 

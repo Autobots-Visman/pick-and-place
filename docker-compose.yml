@@ -1,52 +1,64 @@
 # Launch a ros master with the controller manager and associated services
 version: "3.8"
 
+# we can use the x prefix for docker compose to ignore these settings
+x-base: &base
+  image: autobots-visman/pick-and-place:latest
+  network_mode: host
+  # We also add some settings for WSL2 opengl gpu acceleration, which should
+  # be ignored by other platforms
+  # https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md
+  volumes:
+    - ./:/catkin_ws/src/app
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  environment: &env
+    DISPLAY: $DISPLAY
+    QT_X11_NO_MITSHM: 1
+
+x-gknet: &gknet
+  image: ivalab/gknet:latest
+  network_mode: host
+  volumes:
+    - ./vendor/GraspKpNet:/catkin_ws/src/app
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  environment: *env
+
+x-gpu-deploy: &gpu-deploy
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: 1
+          capabilities: [gpu]
+
 services:
   base:
+    <<: *base
     build:
       context: .
       dockerfile: docker/Dockerfile
-    # we're just re-use the image, and not carry over building the image again
-    # to other containers in the stack
-    <<: &base
-      image: autobots-visman/pick-and-place:latest
-      network_mode: host
-      # We also add some settings for WSL2 opengl gpu acceleration, which should
-      # be ignored by other platforms
-      # https://github.com/microsoft/wslg/blob/main/samples/container/Containers.md
-      volumes:
-        - ./:/catkin_ws/src/app
-        - /tmp/.X11-unix:/tmp/.X11-unix:ro
-        - ~/.Xauthority:/root/.Xauthority:ro
-        - /usr/lib/wsl:/usr/lib/wsl:ro
-      environment: &env
-        DISPLAY: $DISPLAY
-        QT_X11_NO_MITSHM: 1
-        LD_LIBRARY_PATH: /usr/lib/wsl/lib
+
   base-gpu: &base-gpu
     <<: *base
-    deploy: &gpu-deploy
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-  core:
+    deploy: *gpu-deploy
+
+  core: &core
     command: stdbuf -o L roscore
-    <<: &core
-      image: ros:noetic-ros-core-focal
-      network_mode: host
+    image: ros:noetic-ros-core-focal
+    network_mode: host
+
   set-sim-time:
     <<: *core
     restart: on-failure
     command: stdbuf -o L rosparam set use_sim_time true
+
   gazebo:
     <<: *base-gpu
     command: roslaunch --wait autobots_handy_simulation gazebo.launch rviz:=false
-    depends_on: &depends-on-sim # set-sim-time completes successfully
+    depends_on: &depends-on-sim
       set-sim-time:
         condition: service_completed_successfully
+
   moveit-rviz:
     # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
     # with software rendering. This runs incredibly slow inside of docker, so
@@ -55,27 +67,22 @@ services:
     command: roslaunch --wait finalarm_moveit_config moveit_rviz.launch
     depends_on:
       - gazebo
+
   gknet:
+    <<: *gknet
     build:
       context: vendor/GraspKpNet
       dockerfile: docker/Dockerfile
     deploy: *gpu-deploy
     shm_size: 2gb
-    <<: &gknet-base
-      image: ivalab/gknet:latest
-      command: roslaunch --wait gknet_perception detect.launch detect_args:="--prometheus-port 8080"
-      network_mode: host
-      volumes:
-        - ./vendor/GraspKpNet:/catkin_ws/src/app
-        - /tmp/.X11-unix:/tmp/.X11-unix:ro
-        - ~/.Xauthority:/root/.Xauthority:ro
-      environment:
-        DISPLAY: $DISPLAY
-        QT_X11_NO_MITSHM: 1
-      depends_on: *depends-on-sim
+    command: roslaunch --wait gknet_perception detect.launch detect_args:="--prometheus-port 8080"
+    depends_on: *depends-on-sim
+
   filter-gui:
-    <<: *gknet-base
-    command: rosrun gknet_perception filter_gui.py
+    <<: *gknet
+    command: roslaunch --wait gknet_perception filter_gui.launch
+    depends_on: *depends-on-sim
+
   stream-annotated-image:
     <<: *base
     command: rosrun autobots_calibration stream_camera.py --image-topic /gknet/annotated_image
