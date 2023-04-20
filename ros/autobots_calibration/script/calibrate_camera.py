@@ -9,8 +9,9 @@ import tf2_ros
 from autobots_calibration.msg import CameraExtrinsics, CameraStatus
 from camera.extrinsic.aruco import CtoW_Calibrator_aruco
 from cv_bridge import CvBridge
-from geometry_msgs.msg import TransformStamped
+from geometry_msgs.msg import Quaternion, Transform, TransformStamped, Vector3
 from sensor_msgs.msg import CameraInfo, Image
+from std_msgs.msg import Header
 from tf.transformations import quaternion_from_matrix
 
 
@@ -108,27 +109,42 @@ def main():
     print(f"M_CL:{calibrator.M_CL}")
 
     # let's also publish the calibration as a static transform using tf2
-    M_CL = np.array(calibrator.M_CL)
-    print(
+    rospy.loginfo(
         f"publishing tf transform from {args.marker_frame_id} to {args.camera_frame_id}"
     )
-    camera_pose = TransformStamped()
-    camera_pose.header.frame_id = args.marker_frame_id
-    camera_pose.child_frame_id = args.camera_frame_id
-    camera_pose.transform.translation.x = M_CL[0, 3]
-    camera_pose.transform.translation.y = M_CL[1, 3]
-    camera_pose.transform.translation.z = M_CL[2, 3]
+    M_CL = np.array(calibrator.M_CL)
     q = quaternion_from_matrix(M_CL)
-    camera_pose.transform.rotation.x = q[0]
-    camera_pose.transform.rotation.y = q[1]
-    camera_pose.transform.rotation.z = q[2]
-    camera_pose.transform.rotation.w = q[3]
+    camera_pose = TransformStamped(
+        header=Header(frame_id=args.marker_frame_id),
+        child_frame_id=args.camera_frame_id,
+        transform=Transform(
+            translation=Vector3(x=M_CL[0, 3], y=M_CL[1, 3], z=M_CL[2, 3]),
+            rotation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3]),
+        ),
+    )
+
+    # rospy.loginfo(
+    #     f"publishing tf transform from {args.camera_frame_id} to {args.marker_frame_id}"
+    # )
+    # # lets also publish the inverse transform
+    # M_CL_inv = np.linalg.inv(M_CL)
+    # q_inv = quaternion_from_matrix(M_CL_inv)
+    # marker_pose = TransformStamped(
+    #     header=Header(frame_id=args.camera_frame_id),
+    #     child_frame_id=args.marker_frame_id,
+    #     transform=Transform(
+    #         translation=Vector3(x=M_CL_inv[0, 3], y=M_CL_inv[1, 3], z=M_CL_inv[2, 3]),
+    #         rotation=Quaternion(x=q_inv[0], y=q_inv[1], z=q_inv[2], w=q_inv[3]),
+    #     ),
+    # )
 
     rate = rospy.Rate(args.rate)
     broadcaster = tf2_ros.TransformBroadcaster()
     while not rospy.is_shutdown():
         camera_pose.header.stamp = rospy.Time.now()
         broadcaster.sendTransform(camera_pose)
+        # marker_pose.header.stamp = rospy.Time.now()
+        # broadcaster.sendTransform(marker_pose)
         rate.sleep()
 
 
