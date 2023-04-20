@@ -2,7 +2,7 @@
 <sdf version="1.4">
   <model name="aruco_tile">
     <static>true</static>
-    <link name="tile_link">
+    <link name="base_link">
       <!-- https://classic.gazebosim.org/tutorials?tut=color_model -->
       <visual name="tile_visual">
         <pose>0 0 0 0 0 0</pose>

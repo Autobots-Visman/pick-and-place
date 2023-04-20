@@ -16,6 +16,8 @@
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>python3-numpy</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf</exec_depend>
 
   <test_depend>ros_pytest</test_depend>
 

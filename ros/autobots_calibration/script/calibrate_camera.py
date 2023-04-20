@@ -5,10 +5,13 @@ from argparse import ArgumentParser
 import cv2
 import numpy as np
 import rospy
+import tf2_ros
 from autobots_calibration.msg import CameraExtrinsics, CameraStatus
 from camera.extrinsic.aruco import CtoW_Calibrator_aruco
 from cv_bridge import CvBridge
+from geometry_msgs.msg import TransformStamped
 from sensor_msgs.msg import CameraInfo, Image
+from tf.transformations import quaternion_from_matrix
 
 
 def parse_args():
@@ -34,6 +37,24 @@ def parse_args():
         type=float,
         default=0.1,
         help="length of the marker in meters",
+    )
+    parser.add_argument(
+        "--rate",
+        type=float,
+        default=10.0,
+        help="rate at which to publish the transform",
+    )
+    parser.add_argument(
+        "--camera-frame-id",
+        type=str,
+        default="camera/base_link",
+        help="frame id of the camera",
+    )
+    parser.add_argument(
+        "--marker-frame-id",
+        type=str,
+        default="aruco_tile/base_link",
+        help="frame id of the marker",
     )
     # ignore any other args
     args, _ = parser.parse_known_args()
@@ -86,7 +107,29 @@ def main():
     print("calibration complete")
     print(f"M_CL:{calibrator.M_CL}")
 
-    rospy.spin()
+    # let's also publish the calibration as a static transform using tf2
+    M_CL = np.array(calibrator.M_CL)
+    print(
+        f"publishing tf transform from {args.marker_frame_id} to {args.camera_frame_id}"
+    )
+    camera_pose = TransformStamped()
+    camera_pose.header.frame_id = args.marker_frame_id
+    camera_pose.child_frame_id = args.camera_frame_id
+    camera_pose.transform.translation.x = M_CL[0, 3]
+    camera_pose.transform.translation.y = M_CL[1, 3]
+    camera_pose.transform.translation.z = M_CL[2, 3]
+    q = quaternion_from_matrix(M_CL)
+    camera_pose.transform.rotation.x = q[0]
+    camera_pose.transform.rotation.y = q[1]
+    camera_pose.transform.rotation.z = q[2]
+    camera_pose.transform.rotation.w = q[3]
+
+    rate = rospy.Rate(args.rate)
+    broadcaster = tf2_ros.TransformBroadcaster()
+    while not rospy.is_shutdown():
+        camera_pose.header.stamp = rospy.Time.now()
+        broadcaster.sendTransform(camera_pose)
+        rate.sleep()
 
 
 if __name__ == "__main__":

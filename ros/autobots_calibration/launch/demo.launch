@@ -18,6 +18,13 @@
     file="$(find autobots_calibration)/launch/aruco_gazebo_harness.launch"
   />
   <include file="$(find autobots_calibration)/launch/spawn_aruco_tile.launch" />
+  <!-- Now connect the aruco tile to the world -->
+  <node
+    pkg="tf2_ros"
+    type="static_transform_publisher"
+    name="world_to_aruco"
+    args="0 0 0 0 0 0 world aruco_tile/base_link"
+  />
 
   <!-- run the calibration -->
   <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />

@@ -29,3 +29,21 @@ The second script is a node that performs the actual calibration process.
 
 The third script is a node that publishes the transformation matrix from the ArUco tag to the camera.
 This script provides an API that other pose estimation nodes can use to get the transformation matrix, without hard coding the values.
+
+## notes
+
+AFter running the demo, we can check on the transformations being published:
+
+```bash
+roslaunch autobots_calibration demo.launch
+```
+
+```bash
+rosrun tf tf_echo /aruco_tile/base_link /camera/base_link
+
+# use this to ensure that the topics
+rosrun tf2_tools view_frames.py
+```
+
+The transformation from the aruco tag to the camera base link is not quite right, because the camera lense is not at the base of the camera.
+However, for the purposes of the simulation, this should actually be good enough.
