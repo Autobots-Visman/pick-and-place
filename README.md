@@ -69,12 +69,26 @@ Then spawn some objects for testing:
 docker compose run --rm base rosrun autobots_handy_simulation spawn_random_objects.py
 ```
 
+There are few Makefile targets to make the syntax here a bit easier:
+
+```bash
+make build
+make up
+make down
+```
+
 #### WSL2
 
 If you're using WSL2 with docker and a GPU, you may need to use the following docker override for gazebo to run properly:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.wsl.yml up
+```
+
+This can be shorted to the following Makefile target:
+
+```bash
+make up-wsl
 ```
 
 #### Clean up your containers
