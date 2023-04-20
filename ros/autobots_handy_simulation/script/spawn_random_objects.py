@@ -46,6 +46,7 @@ def random_pose():
 def parse_args():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--count", type=int, default=3)
+    parser.add_argument("--prefix", type=str, default="warehouse_")
     # ignore any other args
     args, _ = parser.parse_known_args()
     return args
@@ -75,7 +76,7 @@ def main():
         # replace static property
         # xml_data = xml_data.replace("<static>true</static>", "<static>false</static>")
 
-        spawn_model(model_name, xml_data, "/", random_pose(), "world")
+        spawn_model(f"{args.prefix}model_name", xml_data, "/", random_pose(), "world")
         # set gravity on model
         set_physics(gravity=Point(0, 0, -9.81))
 

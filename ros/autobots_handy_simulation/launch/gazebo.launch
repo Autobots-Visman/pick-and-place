@@ -18,14 +18,6 @@
     />
   </include>
 
-  <!-- Lets link the camera/base_link to the world via tf2 -->
-  <node
-    pkg="tf2_ros"
-    type="static_transform_publisher"
-    name="camera_to_world"
-    args="0 0 0 0 0 0 world camera/base_link"
-  />
-
   <!-- Load a table into the scene, rotated 90 degrees and offset from center -->
   <param
     name="table_description"
@@ -55,6 +47,12 @@
     <!-- put the tile on the table in front of the robot -->
     <arg name="spawn_args" value="-x 0.5 -z 1.03" />
   </include>
+  <node
+    pkg="tf2_ros"
+    type="static_transform_publisher"
+    name="world_to_aruco"
+    args="0.5 0 1.03 0 0 0 world world aruco_tile/base_link"
+  />
   <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
 
   <!-- load rviz -->
