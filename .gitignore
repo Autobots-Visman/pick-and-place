@@ -1,1 +1,4 @@
 __pycache__/
+# ignore tf_view files
+frames.gv
+frames.pdf
