@@ -50,7 +50,7 @@
   <node
     pkg="tf2_ros"
     type="static_transform_publisher"
-    name="world_to_aruco"
+    name="aurco_to_world"
     args="-0.5 0 -1.03 0 0 0 aruco_tile/base_link world"
   />
   <include file="$(find autobots_calibration)/launch/calibrate_camera.launch" />
