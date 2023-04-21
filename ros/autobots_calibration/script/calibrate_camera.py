@@ -115,8 +115,8 @@ def main():
     M_CL = np.array(calibrator.M_CL)
     q = quaternion_from_matrix(M_CL)
     camera_pose = TransformStamped(
-        header=Header(frame_id=args.marker_frame_id),
-        child_frame_id=args.camera_frame_id,
+        header=Header(frame_id=args.camera_frame_id),
+        child_frame_id=args.marker_frame_id,
         transform=Transform(
             translation=Vector3(x=M_CL[0, 3], y=M_CL[1, 3], z=M_CL[2, 3]),
             rotation=Quaternion(x=q[0], y=q[1], z=q[2], w=q[3]),

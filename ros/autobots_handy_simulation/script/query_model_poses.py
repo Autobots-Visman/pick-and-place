@@ -95,12 +95,7 @@ def main():
     tf2_ros.TransformListener(tf_buffer)
 
     # Wait for the world to camera transform to become available
-    world_to_aruco = wait_for_transform(tf_buffer, "world", "aruco_tile/base_link")
-    aruco_to_camera = wait_for_transform(
-        tf_buffer,
-        "aruco_tile/base_link",
-        "camera/base_link",
-    )
+    world_to_camera = wait_for_transform(tf_buffer, "world", "camera/base_link")
     world_properties = get_world_properties()
     points = []
     for model_name in world_properties.model_names:
@@ -113,8 +108,7 @@ def main():
             header=rospy.Header(stamp=rospy.Time.now(), frame_id="world"),
             point=pose.position,
         )
-        p_aruco = do_transform_point(p_world, world_to_aruco)
-        p_camera = do_transform_point(p_aruco, aruco_to_camera)
+        p_camera = do_inverse_transform_point(p_world, world_to_camera)
         # Transform the point and print the result
         u, v = do_transform_point_2d(p_camera, fx, fy, cx, cy)
         rospy.loginfo("Point in 2D camera frame: u={}, v={}".format(u, v))
@@ -130,7 +124,7 @@ def main():
         cv2.circle(img, (int(u), int(v)), 5, (0, 0, 255), -1)
     cv2.imshow("image", img)
 
-    while True:
+    while not rospy.is_shutdown():
         if (
             cv2.waitKey(20) & 0xFF in [27, ord("q")]
             or cv2.getWindowProperty("image", cv2.WND_PROP_VISIBLE) < 1
