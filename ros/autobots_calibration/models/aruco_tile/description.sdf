@@ -5,7 +5,8 @@
     <link name="base_link">
       <!-- https://classic.gazebosim.org/tutorials?tut=color_model -->
       <visual name="tile_visual">
-        <pose>0 0 0 0 0 0</pose>
+        <!-- Rotate this by 90 degrees; otherwise calibration will be off -->
+        <pose>0 0 0 0 0 1.5708</pose>
         <geometry>
           <box>
             <size>0.1 0.1 0.001</size>
