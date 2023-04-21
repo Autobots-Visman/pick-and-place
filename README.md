@@ -69,6 +69,12 @@ Then spawn some objects for testing:
 docker compose run --rm base rosrun autobots_handy_simulation spawn_random_objects.py
 ```
 
+We can view where those points are projected onto the camera image:
+
+```bash
+docker compose run --rm base rosrun autobots_handy_simulation query_model_poses.py
+```
+
 There are few Makefile targets to make the syntax here a bit easier:
 
 ```bash

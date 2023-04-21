@@ -34,9 +34,9 @@ def random_pose():
     margin = 0.1
     return Pose(
         Point(
-            random.uniform(0 + margin, 0.8 - margin),
-            random.uniform(-0.75 + margin, 0.75 - margin),
-            random.uniform(1.03, 1.3),
+            random.uniform(0 + margin, 0.5 - margin),
+            random.uniform(-0.5 + margin, 0.5 - margin),
+            random.uniform(1.03, 1.2),
         ),
         # random rotation along the table plane
         Quaternion(0, 0, 0, 0),

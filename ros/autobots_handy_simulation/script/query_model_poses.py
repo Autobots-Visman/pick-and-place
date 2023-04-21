@@ -7,7 +7,6 @@ import tf2_ros
 from cv_bridge import CvBridge
 from gazebo_msgs.srv import GetModelState, GetWorldProperties
 from sensor_msgs.msg import CameraInfo, Image
-from tf2_geometry_msgs import do_transform_point
 from tf.transformations import inverse_matrix, quaternion_matrix
 
 
@@ -113,14 +112,14 @@ def main():
         u, v = do_transform_point_2d(p_camera, fx, fy, cx, cy)
         rospy.loginfo("Point in 2D camera frame: u={}, v={}".format(u, v))
         if model_name.startswith("warehouse") or model_name.startswith("aruco"):
-            points.append((u, v))
+            points.append((model_name, (u, v)))
 
     # get an image from the color channel
     bridge = CvBridge()
     msg = rospy.wait_for_message("/camera/color/image_raw", Image)
     img = bridge.imgmsg_to_cv2(msg, msg.encoding)
-    for u, v in points:
-        rospy.loginfo("u={}, v={}".format(u, v))
+    for model_name, (u, v) in points:
+        rospy.loginfo(f"name={model_name}, u={u}, v={v}")
         cv2.circle(img, (int(u), int(v)), 5, (0, 0, 255), -1)
     cv2.imshow("image", img)
 
