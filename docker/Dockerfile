@@ -107,6 +107,12 @@ RUN cd src && \
 # TODO: remove this once the gknet ros module is merged upstream
 ADD vendor/GraspKpNet /catkin_ws/src/GraspKpNet
 
+# TODO: remove this at some time
+RUN cd /catkin_ws/src/simData && \
+    git remote add acmiyaguchi https://github.com/acmiyaguchi/simData.git && \
+    git fetch --all && \
+    git checkout acmiyaguchi/physics
+
 # add the current ros module and install the requirements
 WORKDIR /catkin_ws/src/app
 ADD requirements.txt requirements.txt
