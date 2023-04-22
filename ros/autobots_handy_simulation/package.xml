@@ -18,6 +18,7 @@
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>moveit_commander</exec_depend>
+  <exec_depend>gknet_msgs</exec_depend>
 
   <test_depend>ros_pytest</test_depend>
 

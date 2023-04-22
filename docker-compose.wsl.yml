@@ -8,6 +8,5 @@ x-base: &base
     LD_LIBRARY_PATH: /usr/lib/wsl/lib
 
 services:
-  base: *base
   base-gpu: *base
   gazebo: *base

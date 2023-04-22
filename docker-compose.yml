@@ -59,14 +59,14 @@ services:
       set-sim-time:
         condition: service_completed_successfully
 
-  moveit-rviz:
-    # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
-    # with software rendering. This runs incredibly slow inside of docker, so
-    # prefer running rviz outside of docker.
-    <<: *base
-    command: roslaunch --wait finalarm_moveit_config moveit_rviz.launch
-    depends_on:
-      - gazebo
+  # moveit-rviz:
+  #   # NOTE: WSL2 is not playing nicely rendering meshes in rviz, so we run this
+  #   # with software rendering. This runs incredibly slow inside of docker, so
+  #   # prefer running rviz outside of docker.
+  #   <<: *base
+  #   command: roslaunch --wait finalarm_moveit_config moveit_rviz.launch
+  #   depends_on:
+  #     - gazebo
 
   gknet:
     <<: *gknet
@@ -83,7 +83,13 @@ services:
     command: roslaunch --wait gknet_perception filter_gui.launch
     depends_on: *depends-on-sim
 
-  stream-annotated-image:
+  # stream-annotated-image:
+  #   <<: *base
+  #   command: rosrun autobots_calibration stream_camera.py --image-topic /gknet/annotated_image
+  #   depends_on: *depends-on-sim
+
+  select-keypoints:
     <<: *base
-    command: rosrun autobots_calibration stream_camera.py --image-topic /gknet/annotated_image
-    depends_on: *depends-on-sim
+    command: rosrun autobots_handy_simulation select_keypoint.py
+    depends_on:
+      - gazebo

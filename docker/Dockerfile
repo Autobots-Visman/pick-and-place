@@ -75,6 +75,7 @@ RUN apt update && \
     ros-noetic-librealsense2 \
     ros-noetic-gazebo-ros \
     ros-noetic-camera-info-manager \
+    ros-noetic-moveit-commander \
     # also include image_view for debugging, and usb_cam for a personal camera
     ros-noetic-image-view \
     ros-noetic-usb-cam \
