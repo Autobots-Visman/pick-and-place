@@ -75,7 +75,10 @@ services:
       dockerfile: docker/Dockerfile
     deploy: *gpu-deploy
     shm_size: 2gb
-    command: roslaunch --wait gknet_perception detect.launch detect_args:="--prometheus-port 8080"
+    command: >
+      roslaunch --wait gknet_perception detect.launch
+        num_keypoints:=3
+        detect_args:="--prometheus-port 8080"
     depends_on: *depends-on-sim
 
   filter-gui:
