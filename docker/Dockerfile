@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.7.0-runtime-ubuntu20.04
+FROM nvidia/cuda:11.7.1-runtime-ubuntu20.04
 
 # take the core ros image on top of the cuda focal image; this allows for gpu
 # acceleration on gazebo
